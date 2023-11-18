@@ -39,9 +39,9 @@ class Timetable extends Mailable
         return new Content(
             markdown: 'emails.timetable',
             with: [
-                'timetableEvents' => $this->timetableEvents->name,
-                'startDate' => $this->startDate->name,
-                'endDate' => $this->endDate->name,
+                'timetableEvents' => $this->timetableEvents,
+                'startDate' => $this->startDate,
+                'endDate' => $this->endDate,
             ]
         );
     }
