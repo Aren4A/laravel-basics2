@@ -3,6 +3,7 @@
 use App\Mail\Timetable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,8 +24,8 @@ Route::get('/', function () {
 Route::get('/mailable', function () {
 
     // All the code logic from timetableNotification commands handle() method
-    $startDate = Carbon::now()->addWeek(1)->startOfWeek()->toISOString();
-    $endDate = Carbon::now()->addWeek(1)->endOfWeek()->toISOString();
+    $startDate = now()->addWeek(1)->startOfWeek()->toISOString();
+    $endDate = now()->addWeek(1)->endOfWeek()->toISOString();
     $response = Http::get('https://tahvel.edu.ee/hois_back/timetableevents/timetableByGroup/38', [
         'from' => $startDate,
         'studentGroups' => '5901',
@@ -36,6 +37,6 @@ Route::get('/mailable', function () {
         ->groupBy(function ($event) {
             return Carbon::parse($event['date'])->locale('et_EE')->dayName;
         });
-
-    return new Timetable($timetableEvents, $startDate, $endDate);
+    $timetableEvents->all();
+    Mail::to('ametikoolitest@gmail.com')->send(new Timetable($timetableEvents, $startDate, $endDate));
 });
